@@ -49,9 +49,9 @@ function custom_css_plugin_page() {
     // Display the form
     echo '<form method="POST">';
     echo '<h2>Header CSS</h2>';
-    echo '<textarea name="custom_css_head" style="width: 97%; height: 500px;">' . $current_css_head . '</textarea>';
+    echo '<textarea name="custom_css_head" style="width: 97%; height: 300px;">' . $current_css_head . '</textarea>';
     echo '<h2>Footer CSS</h2>';
-    echo '<textarea name="custom_css_foot" style="width: 97%; height: 500px;">' . $current_css_foot . '</textarea>';
+    echo '<textarea name="custom_css_foot" style="width: 97%; height: 300px;">' . $current_css_foot . '</textarea>';
     echo '<input type="submit" value="Save CSS">';
     echo '</form>';
 }
@@ -70,9 +70,9 @@ function custom_js_plugin_page() {
     // Display the form
     echo '<form method="POST">';
     echo '<h2>Header JS</h2>';
-    echo '<textarea name="custom_js_head" style="width: 97%; height: 500px;">' . $current_js_head . '</textarea>';
+    echo '<textarea name="custom_js_head" style="width: 97%; height: 300px;">' . $current_js_head . '</textarea>';
     echo '<h2>Footer JS</h2>';
-    echo '<textarea name="custom_js_foot" style="width: 97%; height: 500px;">' . $current_js_foot . '</textarea>';
+    echo '<textarea name="custom_js_foot" style="width: 97%; height: 300px;">' . $current_js_foot . '</textarea>';
     echo '<input type="submit" value="Save JS">';
     echo '</form>';
 }
