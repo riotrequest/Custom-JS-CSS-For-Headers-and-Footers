@@ -3,7 +3,7 @@
 Plugin Name: Custom CSS & JS Plugin
 Description: A simple plugin to add custom CSS and JS through the WordPress admin dashboard.
 Author: RiotRequest
-Version: 1.0
+Version: 1.1
 */
 
 function custom_css_js_plugin_menu() {
@@ -36,10 +36,16 @@ function custom_css_js_plugin_menu() {
 add_action('admin_menu', 'custom_css_js_plugin_menu');
 
 function custom_css_plugin_page() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+
     // Handle post data
     if (isset($_POST['custom_css_head']) || isset($_POST['custom_css_foot'])) {
-        update_option('custom_css_js_plugin_css_head', stripslashes_deep($_POST['custom_css_head']));
-        update_option('custom_css_js_plugin_css_foot', stripslashes_deep($_POST['custom_css_foot']));
+        check_admin_referer('custom_css_js_plugin_save', 'custom_css_js_plugin_nonce');
+        update_option('custom_css_js_plugin_css_head', wp_strip_all_tags(stripslashes_deep($_POST['custom_css_head'])));
+        update_option('custom_css_js_plugin_css_foot', wp_strip_all_tags(stripslashes_deep($_POST['custom_css_foot'])));
+        echo '<div class="updated"><p>CSS settings saved.</p></div>';
     }
 
     // Get the current CSS
@@ -48,19 +54,26 @@ function custom_css_plugin_page() {
 
     // Display the form
     echo '<form method="POST">';
+    wp_nonce_field('custom_css_js_plugin_save', 'custom_css_js_plugin_nonce');
     echo '<h2>Header CSS</h2>';
-    echo '<textarea name="custom_css_head" style="width: 97%; height: 300px;" placeholder="Just input your CSS code, no <style> tags.">' . $current_css_head . '</textarea>';
+    echo '<textarea name="custom_css_head" style="width: 97%; height: 300px;" placeholder="Just input your CSS code, no <style> tags.">' . esc_textarea($current_css_head) . '</textarea>';
     echo '<h2>Footer CSS</h2>';
-    echo '<textarea name="custom_css_foot" style="width: 97%; height: 300px;" placeholder="Just input your CSS code, no <style> tags.">' . $current_css_foot . '</textarea>';
+    echo '<textarea name="custom_css_foot" style="width: 97%; height: 300px;" placeholder="Just input your CSS code, no <style> tags.">' . esc_textarea($current_css_foot) . '</textarea>';
     echo '<input type="submit" value="Save CSS">';
     echo '</form>';
 }
 
 function custom_js_plugin_page() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+
     // Handle post data
     if (isset($_POST['custom_js_head']) || isset($_POST['custom_js_foot'])) {
-        update_option('custom_css_js_plugin_js_head', stripslashes_deep($_POST['custom_js_head']));
-        update_option('custom_css_js_plugin_js_foot', stripslashes_deep($_POST['custom_js_foot']));
+        check_admin_referer('custom_css_js_plugin_save', 'custom_css_js_plugin_nonce');
+        update_option('custom_css_js_plugin_js_head', stripslashes_deep(wp_kses_post($_POST['custom_js_head'])));
+        update_option('custom_css_js_plugin_js_foot', stripslashes_deep(wp_kses_post($_POST['custom_js_foot'])));
+        echo '<div class="updated"><p>JS settings saved.</p></div>';
     }
 
     // Get the current JS
@@ -69,10 +82,11 @@ function custom_js_plugin_page() {
 
     // Display the form
     echo '<form method="POST">';
+    wp_nonce_field('custom_css_js_plugin_save', 'custom_css_js_plugin_nonce');
     echo '<h2>Header JS</h2>';
-    echo '<textarea name="custom_js_head" style="width: 97%; height: 300px;" placeholder="<script> tags are required for JS inclusion.">' . $current_js_head . '</textarea>';
+    echo '<textarea name="custom_js_head" style="width: 97%; height: 300px;" placeholder="<script> tags are required for JS inclusion.">' . esc_textarea($current_js_head) . '</textarea>';
     echo '<h2>Footer JS</h2>';
-    echo '<textarea name="custom_js_foot" style="width: 97%; height: 300px;" placeholder="<script> tags are required for JS inclusion.">' . $current_js_foot . '</textarea>';
+    echo '<textarea name="custom_js_foot" style="width: 97%; height: 300px;" placeholder="<script> tags are required for JS inclusion.">' . esc_textarea($current_js_foot) . '</textarea>';
     echo '<input type="submit" value="Save JS">';
     echo '</form>';
 }
